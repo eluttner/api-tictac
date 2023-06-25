@@ -8,7 +8,7 @@ import (
 	"github.com/eluttner/api-tictac/pkg/mw"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"golang.org/x/exp/slog"
+	"github.com/rs/zerolog/log"
 )
 
 func (s *ServerAPI) GetRoutes(ctx context.Context) *chi.Mux {
@@ -19,7 +19,7 @@ func (s *ServerAPI) GetRoutes(ctx context.Context) *chi.Mux {
 	r.Use(middleware.Logger)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Please read the instructions:"))
+		w.Write([]byte("Please read the instructions in readme.md"))
 	})
 
 	r.Post("/game/{token}/move", s.PostGame(ctx))
@@ -28,7 +28,7 @@ func (s *ServerAPI) GetRoutes(ctx context.Context) *chi.Mux {
 	r.Delete("/game/{token}", s.DeleteGame(ctx))
 
 	chi.Walk(r, func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
-		slog.Debug(fmt.Sprintf("[%s]: '%s' has %d middlewares\n", method, route, len(middlewares)))
+		log.Info().Msgf(fmt.Sprintf("[%s]: '%s' has %d middlewares\n", method, route, len(middlewares)))
 		return nil
 	})
 	return r

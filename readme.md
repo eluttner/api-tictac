@@ -107,6 +107,7 @@ Your code will be evaluated on the following factors:
 ```
 
 **Responses:**
+
 200 Current state of the game
 ```
 { 
@@ -222,6 +223,14 @@ Response:
 ```
 
 ## Tests
+
+The tests cover API Calls and the TicTacToe Wrapper.
+
+```make tests```
+
+or coverage:
+
+```make coverage```
 
   
 ## Considerations
