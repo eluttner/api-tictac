@@ -9,8 +9,8 @@ import (
 
 type TTTIf interface {
 	NewGame() string
-	GetGame(id string) TTTResponse
-	PostGame(player string, row, column int) (error, TTTResponse)
+	GetGame() TTTResponse
+	PostGame(player string, row, column int) (TTTResponse, error)
 }
 
 type TTTResponse struct {
@@ -90,20 +90,4 @@ func (t *TTT) boardToString() [][]string {
 		}
 	}
 	return boardArray
-
-	// board := t.Game.GetBoard()
-	// boardString := "\n"
-	// for i := 0; i < len(board); i++ {
-	// 	for j := 0; j < len(board[i]); j++ {
-	// 		if board[i][j] == nil {
-	// 			boardString += "-"
-	// 		} else if *board[i][j] == ttt.X {
-	// 			boardString += string(ttt.X)
-	// 		} else {
-	// 			boardString += string(ttt.O)
-	// 		}
-	// 	}
-	// 	boardString += "\n"
-	// }
-	// return boardString
 }

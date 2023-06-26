@@ -29,7 +29,7 @@ func (s *ServerAPI) GetGame(ctx context.Context) http.HandlerFunc {
 			mutex.Lock()
 			t := &tictactoe.TTT{}
 			token := t.NewGame()
-			s.Games[token] = *t
+			s.Games[token] = t
 			mutex.Unlock()
 
 			w.WriteHeader(http.StatusCreated)
