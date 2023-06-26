@@ -21,7 +21,9 @@ func (s *ServerAPI) GetGame(ctx context.Context) http.HandlerFunc {
 			Str("reqId", middleware.GetReqID(r.Context())).
 			Logger()
 		token := chi.URLParam(r, "token")
-		sublogger.Info().Msgf("Token: %s", token)
+		if token != "" {
+			sublogger.Info().Msgf("Token: %s", token)
+		}
 
 		if token == "" {
 

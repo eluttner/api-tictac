@@ -153,11 +153,21 @@ Below there is a game example.
 
 ### `GET /health-check`
 
-- 200 Created: a new game is created and returns it's token and initial state
+- 200 ok
 
 ```
 { 
     "timestamp": <timestamp>
+}
+```
+
+### `GET /home`
+
+- 200 ok
+
+```
+{ 
+    "info": "Welcome to the TicTacToe API. Please use the /game endpoint to start a new game."
 }
 ```
 
