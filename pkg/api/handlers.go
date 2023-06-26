@@ -3,8 +3,10 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/eluttner/api-tictac/pkg/tictactoe"
 	"github.com/go-chi/chi/v5"
@@ -125,5 +127,21 @@ func (s *ServerAPI) DeleteGame(ctx context.Context) http.HandlerFunc {
 		}
 		mutex.RUnlock()
 		w.WriteHeader(http.StatusNotFound)
+	})
+}
+
+func (s *ServerAPI) HealthCheck(ctx context.Context) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(fmt.Sprintf(`{"timestamp": "%s"}`, time.Now())))
+	})
+}
+
+func (s *ServerAPI) Home(ctx context.Context) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(fmt.Sprintf(`{"info": "%s"}`, "Welcome to the TicTacToe API. Please use the /game endpoint to start a new game.")))
 	})
 }
