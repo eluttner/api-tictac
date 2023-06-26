@@ -19,10 +19,10 @@ func main() {
 	ctx = logger.WithContext(ctx)
 
 	s := &api.ServerAPI{}
-	r := s.ConfigureServer(ctx)
+	s.ConfigureServer(ctx)
 
 	log.Info().Msg("Starting server")
-	err := http.ListenAndServe(":3000", r)
+	err := http.ListenAndServe(":3000", s.Routes)
 	if err != nil {
 		log.Error().Err(err).Msg("Error: starting the server")
 	}

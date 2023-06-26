@@ -65,11 +65,26 @@ Your code will be evaluated on the following factors:
 
 ### Start the Server API
 
+This api can run directly from the code or using Docker
+
+1 - Clone the this repo
+
+2 - `make run`
+
+3 - `make run-docker`
+
+The port 3000 is hardcoded (see improvements). 
+
+Please Check if it is not conflicting with another running app using the same port.
+
+Below there is a game example.
+
 ### API Routes
 
-`GET /game`
+### `GET /game`
 
-201 Creates a new game and returns it's token and initial state
+- 201 Created: a new game is created and returns it's token and initial state
+
 ```
 { 
     "token": <Game ID Token>,
@@ -79,11 +94,11 @@ Your code will be evaluated on the following factors:
 }
 ```
 
-`GET /game/<id>`
+#### `GET /game/<id>`
 
 **Responses:**
 
-200 Current state of the game
+- 200 Current state of the game
 ```
 { 
     "token": <Game ID Token>,
@@ -93,9 +108,9 @@ Your code will be evaluated on the following factors:
 }
 ```
 
-404 Game not found
+- 404 Game not found
 
-`POST /game/<id>/move`
+### `POST /game/<id>/move`
 
 **Request:**
 ```
@@ -108,7 +123,7 @@ Your code will be evaluated on the following factors:
 
 **Responses:**
 
-200 Current state of the game
+- 200 Current state of the game
 ```
 { 
     "token": <Game ID Token>,
@@ -118,30 +133,41 @@ Your code will be evaluated on the following factors:
 }
 ```
 
-404 Game not found
+- 404 Game not found
 
-401 Bad request
-- Game is already finished
-- Out of bounds for row/column
-- Invalid player
-- Location is not empty
-- Invalid player's turn
+- 401 Bad request, can be one of:
+  - Game is already finished
+  - Out of bounds for row/column
+  - Invalid player
+  - Location is not empty
+  - Invalid player's turn
 
 
-`DELETE /game/<id>`
+### `DELETE /game/<id>`
 
 **Responses:**
 
-200 Game deleted
+- 200 Game deleted
 
-404 Game not found
+- 404 Game not found
 
+### `GET /health-check`
+
+- 200 Created: a new game is created and returns it's token and initial state
+
+```
+{ 
+    "timestamp": <timestamp>
+}
+```
 
 ### Examples
 Example of a game with a winner:
 
+1 - Create a new game
+
 ```
-curl curl --request GET \
+curl -v --request GET \
     --url http://localhost:3000/game
 
 Response:
@@ -157,9 +183,9 @@ Response:
 }
 ```
 
-Check game state
+2 - Check game state
 ```
-curl curl --request GET \
+curl -v --request GET \
     --url http://localhost:3000/game/269f9469-7c43-4680-8497-bdc9a94823c0
 
 Response:
@@ -175,9 +201,9 @@ Response:
 }
 ```
 
-Make a move X
+3 - Make a move X
 ```
-curl --request POST \
+curl -v --request POST \
   --url http://localhost:3000/game/269f9469-7c43-4680-8497-bdc9a94823c0/move \
   --header 'Content-Type: application/json' \
   --data '{
@@ -198,9 +224,9 @@ Response:
     ]
 }
 ```
-Make a move O
+4 - Make a move O
 ```
-curl --request POST \
+curl -v --request POST \
   --url http://localhost:3000/game/269f9469-7c43-4680-8497-bdc9a94823c0/move \
   --header 'Content-Type: application/json' \
   --data '{
@@ -221,6 +247,75 @@ Response:
     ]
 }
 ```
+5 - Make a move X
+```
+curl -v --request POST \
+  --url http://localhost:3000/game/269f9469-7c43-4680-8497-bdc9a94823c0/move \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"player": "X",
+	"row": 2,
+	"column": 0
+}'
+
+Response:
+{
+	"token": "269f9469-7c43-4680-8497-bdc9a94823c0",
+	"next-player": "O",
+	"winner": "",
+	"board": [
+		["-","O","-"],
+		["-","X","-"],
+		["X","-","-"]
+    ]
+}
+```
+6 - Make a move O
+```
+curl -v --request POST \
+  --url http://localhost:3000/game/269f9469-7c43-4680-8497-bdc9a94823c0/move \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"player": "O",
+	"row": 2,
+	"column": 1
+}'
+
+Response:
+{
+	"token": "269f9469-7c43-4680-8497-bdc9a94823c0",
+	"next-player": "X",
+	"winner": "",
+	"board": [
+		["-","O","-"],
+		["-","X","-"],
+		["X","O","-"]
+    ]
+}
+```
+7 - Make a move X
+```
+curl -v --request POST \
+  --url http://localhost:3000/game/269f9469-7c43-4680-8497-bdc9a94823c0/move \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"player": "X",
+	"row": 0,
+	"column": 2
+}'
+
+Response:
+{
+	"token": "269f9469-7c43-4680-8497-bdc9a94823c0",
+	"next-player": "",
+	"winner": "X",
+	"board": [
+		["-","O","X"],
+		["-","X","-"],
+		["X","-","-"]
+    ]
+}
+```
 
 ## Tests
 
@@ -232,7 +327,7 @@ or coverage:
 
 ```make coverage```
 
-  
+
 ## Considerations
 
 - No persistent storage was used. The server is stateful. It stores each game in memory. Restarting the server clear all games.
@@ -265,4 +360,4 @@ or coverage:
  - Improve loggin/tracing.
  - Improve how to include the RequestID. For example, use Zerolog and include the RequestID in the middleware.
  - Create a cli to execute maintenance tasks.
- - 
+ - Pass variables from the cli command. Example: `port number`.

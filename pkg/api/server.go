@@ -13,13 +13,14 @@ type ServerConfig struct {
 
 type ServerAPI struct {
 	Config ServerConfig
+	Routes *chi.Mux
 	Games  map[string]tictactoe.TTT
 }
 
-func (s *ServerAPI) ConfigureServer(ctx context.Context) *chi.Mux {
+func (s *ServerAPI) ConfigureServer(ctx context.Context) {
 
 	s.Games = make(map[string]tictactoe.TTT)
 
-	r := s.GetRoutes(ctx)
-	return r
+	s.Routes = s.GetRoutes(ctx)
+
 }
