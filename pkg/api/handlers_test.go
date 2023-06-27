@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/eluttner/api-tictac/pkg/tictactoe"
+	"github.com/go-chi/chi/v5"
 )
 
 type Moves struct {
@@ -114,8 +116,15 @@ func TestGame(t *testing.T) {
 	}
 	fmt.Printf("token: %s\n", token)
 	for _, move := range moves {
-		fmt.Printf("token: %s\n", fmt.Sprintf("/game/%s/move", token))
-		req, err = http.NewRequest("POST", fmt.Sprintf("/game/%s/move", token), strings.NewReader(move.Move))
+		body := []byte(move.Move)
+		r, err := http.NewRequest("POST", fmt.Sprintf("/game/%s/move", token), bytes.NewBuffer(body))
+
+		chiCtx := chi.NewRouteContext()
+		req := r.WithContext(context.WithValue(r.Context(), chi.RouteCtxKey, chiCtx))
+
+		// Add the key/value to the context.
+		chiCtx.URLParams.Add("token", fmt.Sprintf("%v", token))
+
 		if err != nil {
 			t.Fatal(err)
 		}

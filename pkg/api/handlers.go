@@ -22,7 +22,7 @@ func (s *ServerAPI) GetGame(ctx context.Context) http.HandlerFunc {
 			Logger()
 		token := chi.URLParam(r, "token")
 		if token != "" {
-			sublogger.Info().Msgf("Token: %s", token)
+			sublogger.Info().Msgf("GET Token: %s", token)
 		}
 
 		if token == "" {
@@ -65,7 +65,7 @@ func (s *ServerAPI) PostGame(ctx context.Context) http.HandlerFunc {
 			Str("reqId", middleware.GetReqID(r.Context())).
 			Logger()
 		token := chi.URLParam(r, "token")
-		sublogger.Info().Msgf("Token: %s", token)
+		sublogger.Info().Msgf("POST Token: %s", token)
 
 		var req Req
 		err := json.NewDecoder(r.Body).Decode(&req)
